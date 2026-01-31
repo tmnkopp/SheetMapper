@@ -31,13 +31,17 @@ process {
         # 2. Import the CSV natively
         $distinctCodes = Import-Csv -Path $SourceSheetPath | 
                         Select-Object -ExpandProperty $config.SourceColumnName -Unique
-        Write-Log "Distinct codes extracted: $($distinctCodes -join ', ')."
+        Write-Log "Distinct Source codes extracted: $($distinctCodes -join ', ')."
          
         $lookupData = Import-Csv -Path $LookupSheetPath -ErrorAction Stop
-   
+        
         $foundRows = foreach ($code in $distinctCodes) { 
-            $lookupData | Where-Object { $_.Code -eq $code }
+            $lookupData | Where-Object { $_.$($config.LookupColumnName) -eq $code }
         }
+        $distinctFoundCodes = $foundRows | Select-Object -ExpandProperty $config.LookupColumnName -Unique
+        Write-Host "Distinct Found codes: $($distinctFoundCodes -join ', ')."
+        $distinctCodesNotFoundInLookup = $distinctCodes | Where-Object { $_ -notin $distinctFoundCodes }
+        Write-Host "Distinct Codes not found in Lookup: $($distinctCodesNotFoundInLookup -join ', ')."
  
         if ($foundRows) {
             $foundRows | Export-Csv -Path $SavePath -NoTypeInformation -Force

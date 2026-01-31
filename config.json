@@ -2,5 +2,6 @@
     "SourceSheetPath": "~\\data\\source.csv",
     "SourceColumnName": "Code1",
     "LookupSheetPath": "~\\data\\lookup.csv",
+    "LookupColumnName": "Code",
     "SavePath": "~\\data\\output.csv"
 }
