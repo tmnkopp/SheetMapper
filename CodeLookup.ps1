@@ -48,9 +48,7 @@ process {
         } 
     }
     catch {
-        Write-Error "An error occurred: $($_.Exception.Message)"
-        # Exit with a non-zero code to indicate failure if needed
-        # exit 1
+        Write-Error "An error occurred: $($_.Exception.Message)" 
     }
 }
 
