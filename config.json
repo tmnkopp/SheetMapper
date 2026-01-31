@@ -1,0 +1,6 @@
+{
+    "SourceSheetPath": "C:\\Users\\citiz_uf5f2g7\\source\\repos\\SheetMapper\\data\\source.csv",
+    "SourceColumnName": "Code1",
+    "LookupSheetPath": "C:\\Users\\citiz_uf5f2g7\\source\\repos\\SheetMapper\\data\\lookup.csv",
+    "SavePath": "C:\\Users\\citiz_uf5f2g7\\source\\repos\\SheetMapper\\data\\output.csv"
+}
