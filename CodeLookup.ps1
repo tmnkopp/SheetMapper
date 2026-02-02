@@ -4,7 +4,8 @@
 )]
 param( 
     [Parameter( Mandatory = $false,  HelpMessage = 'Specify the OutputFileName.'  )]
-    [string]$OutputFileName     = 'output.xlsx'
+    [string]$OutputFileName     = 'output.xlsx',
+    [switch]$o
 )
 
 begin {
@@ -22,7 +23,7 @@ begin {
     } 
 } 
 process {
- 
+    Clear-Host
     try { 
         $config = Get-Content -Raw -Path "$PSScriptRoot\config.json" | ConvertFrom-Json  
         $SourceSheetPath = $config.SourceSheetPath -replace '~', $PSScriptRoot.Replace('\', '\\')
@@ -39,15 +40,20 @@ process {
             $lookupData | Where-Object { $_.$($config.LookupColumnName) -eq $code }
         }
         $distinctFoundCodes = $foundRows | Select-Object -ExpandProperty $config.LookupColumnName -Unique
-        Write-Host "Distinct Found codes: $($distinctFoundCodes -join ', ')."
+       
         $distinctCodesNotFoundInLookup = $distinctCodes | Where-Object { $_ -notin $distinctFoundCodes }
-        Write-Host "Distinct Codes not found in Lookup: $($distinctCodesNotFoundInLookup -join ', ')."
- 
+
         if ($foundRows) {
             $foundRows | Export-Csv -Path $SavePath -NoTypeInformation -Force
             Write-Host "Success! $($foundRows.Count) rows saved to $SavePath" -ForegroundColor Green
-            $foundRows | Format-Table -AutoSize
-            Start-Process -FilePath $SavePath
+            $foundRows | Format-Table -AutoSize 
+            
+            Write-Host "Distinct Found codes: $($distinctFoundCodes -join ', ')."
+            Write-Host "Distinct Codes not found in Lookup: $($distinctCodesNotFoundInLookup -join ', ')." -BackgroundColor Red
+             Write-Host ""
+            if ($o) {
+                Start-Process -FilePath $SavePath
+            }
         }
         else {
             Write-Warning "No matches were found in the lookup file."
